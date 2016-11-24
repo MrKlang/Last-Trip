@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/LaneReady.unity
+  isLoaded: 1
+  isActive: 1
