@@ -29,6 +29,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
+        public bool isCharging;
         public int lane = 0;
         public float grav;
         private Camera m_Camera;
@@ -97,9 +98,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 StartCoroutine(Slide());
             }
+            if (Input.GetKeyDown(KeyCode.LeftShift) && isCharging==false)
+            {
+                isCharging = true;
+                StartCoroutine(Charge());
+            }
 
-            
-                if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
+            if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
                 StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
@@ -117,7 +122,19 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void ControlManager(CharacterController m_CharacterController)
         {
-            
+             
+        }
+
+        IEnumerator Charge()
+        {
+            m_JumpSpeed = 9;
+            m_WalkSpeed = 9;
+            m_RunSpeed = 9;
+            yield return new WaitForSeconds(0.5f);
+            m_JumpSpeed = 7;
+            m_WalkSpeed = 5;
+            m_RunSpeed = 6;
+            isCharging = false;
         }
 
         void OnTriggerEnter(Collider col)
@@ -130,6 +147,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (col.tag == "TurnTriggerRight")
             {
                 triggercollision = true;
+                //StartCoroutine(TurnSmooth(90));
+            }
+            if (col.tag == "Destr")
+            {
+                triggercollision = true;
+                if (isCharging == true)
+                {
+                    Destroy(col.gameObject);
+                }
                 //StartCoroutine(TurnSmooth(90));
             }
         }

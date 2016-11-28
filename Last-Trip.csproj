@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Assets\ExoController.cs" />
     <Compile Include="Assets\Scripts(mine)\Collectible.cs" />
+    <Compile Include="Assets\Scripts(mine)\Destrictible.cs" />
     <Compile Include="Assets\Scripts(mine)\Flick.cs" />
     <Compile Include="Assets\Scripts(mine)\GameManager.cs" />
     <Compile Include="Assets\Scripts(mine)\GraviFlip.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Assets\Thief\Script\characterRotate.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\PBS Materials Variety Pack\readme.txt" />
     <None Include="Assets\Standard Assets\Cameras\CameraGuidelines.txt" />
     <None Include="Assets\Standard Assets\Characters\FirstPersonCharacter\FirstPersonCharacterGuidelines.txt" />
     <None Include="Assets\Standard Assets\Characters\RollerBall\RollerBallGuidelines.txt" />
