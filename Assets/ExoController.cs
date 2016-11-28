@@ -137,12 +137,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             if (col.tag == "TurnTriggerLeft")
             {
-                StartCoroutine(TurnSmooth(-90));
+                StartCoroutine(TurnSmooth(-1f));
                 triggercollision = false;
             }
             if (col.tag == "TurnTriggerRight")
             {
-                StartCoroutine(TurnSmooth(90));
+                StartCoroutine(TurnSmooth(1f));
                 triggercollision = false;
             }
         }
@@ -219,20 +219,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
         IEnumerator TurnSmooth(float variable)
         {
-        float minAngle = 0.0F;
-        float maxAngle = variable;
-        float t = 0.0f;
-        float angle = 0.0f;
+            /* var pos = transform.rotation;
+             float t = 0.0f;
+             float xend = pos.y + variable;
+             while (pos.y != xend/2)
+             {
+                 pos = transform.rotation;
+                 pos.y = Mathf.Lerp(pos.y, xend, t);
+                 t += 0.07f;
+                 transform.rotation = pos;
+                 yield return null;
 
-            while (angle !=maxAngle)
-            {
-                angle = Mathf.LerpAngle(minAngle, maxAngle, t);
-
-                m_CharacterController.transform.eulerAngles = new Vector3(0, angle, 0);
-                t += 0.1f;
-                yield return null;
-
-            }
+         }*/
+            var pos = transform.rotation;
+            pos.y += variable;
+            transform.rotation = pos;
+            return null;
         }
 
         private void FixedUpdate()
