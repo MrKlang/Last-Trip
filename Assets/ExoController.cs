@@ -190,12 +190,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             float t = 0.0f;
             float xend = pos.x + variable;
                 while (pos.x != xend) {
-                pos = transform.position;
-                pos.x = Mathf.Lerp(pos.x, xend, t);
-                t += 0.07f;
-                transform.position = pos;
-            yield return null;
-            }
+                    pos = transform.position;
+                    pos.x = Mathf.Lerp(pos.x, xend, t);
+                    t += 0.07f;
+                    transform.position = pos;
+                    yield return null;
+                }
         }
 
         IEnumerator SmoothV(float variable)
@@ -265,7 +265,28 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 }
             }
 
-            
+            if (Input.GetButtonDown("Invert Gravity"))  //<< -----Odwracanie gravitacji
+            {
+                if (inverted == false)
+                {
+                    inverted = true;
+                    m_CharacterController.transform.Rotate(180, 180, 0);
+                    m_CharacterController.transform.Translate(0, -3, 0);
+                    Physics.gravity = new Vector3(0, -9.81f, 0);
+                }
+                else
+                {
+                    inverted = false;
+                    m_CharacterController.transform.Rotate(180, 180, 0);
+                    m_CharacterController.transform.Translate(0, -3, 0);
+                    Physics.gravity = new Vector3(0, -9.81f, 0);
+                }
+            }
+            if (inverted == false)
+            {
+                m_MoveDir -= Physics.gravity * m_GravityMultiplier * Time.deltaTime;
+            }
+
             else
             {   
                 m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.deltaTime;
