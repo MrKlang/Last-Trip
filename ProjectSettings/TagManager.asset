@@ -6,6 +6,7 @@ TagManager:
   tags:
   - TurnTriggerRight
   - TurnTriggerLeft
+  - Destr
   layers:
   - Default
   - TransparentFX

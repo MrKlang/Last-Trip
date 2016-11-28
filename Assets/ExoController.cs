@@ -53,6 +53,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         float vertical = 0;
         bool isRotttated = false;
 
+        bool isCharging = false;
+
         // Use this for initialization
         private void Start()
         {
@@ -121,9 +123,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 StartCoroutine(Slide());
             }
+            if (Input.GetKeyDown(KeyCode.LeftShift) && isCharging == false)
+            {
+                isCharging = true;
+                StartCoroutine(Charge());
+            }
 
-            
-                if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
+
+            if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
                 StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
@@ -146,6 +153,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         void OnTriggerEnter(Collider col)
         {
+            if (col.tag == "Destr")
+            {
+                triggercollision = true;
+                if (isCharging == true)
+                {
+                    Destroy(col.gameObject);
+                }
+                //StartCoroutine(TurnSmooth(90));
+            }
             if (col.tag == "TurnTriggerLeft")
             {
                 
@@ -177,9 +193,20 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 
                 
             }
+            
         }
 
-        
+        IEnumerator Charge()
+        {
+            m_JumpSpeed = 9;
+            m_WalkSpeed = 9;
+            m_RunSpeed = 9;
+            yield return new WaitForSeconds(0.5f);
+            m_JumpSpeed = 7;
+            m_WalkSpeed = 5;
+            m_RunSpeed = 6;
+            isCharging = false;
+        }
 
         IEnumerator Slide()
         {
@@ -321,11 +348,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
             else
-            {   
+            {
                 m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.deltaTime;
             }
 
-            m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
+            m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
 
             //ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
