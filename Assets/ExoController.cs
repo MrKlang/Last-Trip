@@ -49,6 +49,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
         bool isSliding = false;
         float height;
         private bool triggercollision = false;
+        float horizontal = 0; //CrossPlatformInputManager.GetAxis("Horizontal");
+        float vertical = 0;
+        bool isRotttated = false;
 
         // Use this for initialization
         private void Start()
@@ -82,16 +85,37 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
+            if (isRotttated)
+            {
+               
+            }
+            else
+            {
+                horizontal = 0;
+                vertical = 1;
+            }
 
             if (Input.GetKeyDown(KeyCode.A) && (lane != -1) && (!m_Jumping))
             {
-                StartCoroutine(SmoothH(-3f));
-                lane--;
+                if (isRotttated)
+                {
+                    StartCoroutine(SmoothH(3f));
+                    lane--;
+                } 
+                else{ 
+                    StartCoroutine(SmoothH(-3f));
+                    lane--; }
             }
             if (Input.GetKeyDown(KeyCode.D) && (lane != 1) && (!m_Jumping))
             {
+                if (isRotttated)
+                {
+                    StartCoroutine(SmoothH(-3f));
+                    lane++;
+                }
+                else { 
                 StartCoroutine(SmoothH(3f));
-                lane++;
+                lane++; }
             }
             if (Input.GetKeyDown(KeyCode.S) && (!isSliding) && (!m_Jumping))
             {
@@ -124,26 +148,34 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             if (col.tag == "TurnTriggerLeft")
             {
-                triggercollision = true;
+                
+                
                 //StartCoroutine(TurnSmooth(-90));
             }
             if (col.tag == "TurnTriggerRight")
             {
-                triggercollision = true;
+                
+                
                 //StartCoroutine(TurnSmooth(90));
             }
         }
         void OnTriggerExit(Collider col)
         {
-            if (col.tag == "TurnTriggerLeft")
+            if (col.tag == "TurnTriggerLeft" && triggercollision != true)
             {
-                StartCoroutine(TurnSmooth(-1f));
-                triggercollision = false;
+                triggercollision = true;
+                isRotttated = true;
+                StartCoroutine(TurnSmooth(-1));
+                
+                
             }
-            if (col.tag == "TurnTriggerRight")
+            if (col.tag == "TurnTriggerRight"&&triggercollision !=true)
             {
-                StartCoroutine(TurnSmooth(1f));
-                triggercollision = false;
+                triggercollision = true;
+                isRotttated = true;
+                StartCoroutine(TurnSmooth(1));
+                
+                
             }
         }
 
@@ -188,53 +220,52 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             Vector3 pos = transform.position;
             float t = 0.0f;
-            float xend = pos.x + variable;
-                while (pos.x != xend) {
+            if (!isRotttated)
+            {
+                float xend = pos.x + variable;
+                while (pos.x != xend)
+                {
                     pos = transform.position;
                     pos.x = Mathf.Lerp(pos.x, xend, t);
                     t += 0.07f;
                     transform.position = pos;
                     yield return null;
                 }
-        }
-
-        IEnumerator SmoothV(float variable)
-        {
-            Vector3 pos = transform.position;
-            float t = 0.0f;
-            bool retr = false;
-            float xend = pos.y + variable;
-            float height = m_CharacterController.height;
-            float heightend = height / 2;
-            while (height != heightend)
+            }
+            if (isRotttated)
             {
-                pos = transform.position;
-                pos.y = Mathf.Lerp(pos.y, xend, t);
-                height =Mathf.Lerp(height, heightend, t);
-                t += 0.07f;
-                transform.position = pos;
-                m_CharacterController.height = height;
-                yield return null;
+                float xend = pos.z + variable;
+                while (pos.z != xend)
+                {
+                    pos = transform.position;
+                    pos.z = Mathf.Lerp(pos.z, xend, t);
+                    t += 0.07f;
+                    transform.position = pos;
+                    yield return null;
+                }
+
             }
         }
-        IEnumerator TurnSmooth(float variable)
-        {
-            /* var pos = transform.rotation;
-             float t = 0.0f;
-             float xend = pos.y + variable;
-             while (pos.y != xend/2)
-             {
-                 pos = transform.rotation;
-                 pos.y = Mathf.Lerp(pos.y, xend, t);
-                 t += 0.07f;
-                 transform.rotation = pos;
-                 yield return null;
 
-         }*/
+
+        IEnumerator TurnSmooth(float variable)
+        { /*
+            var pos = transform.rotation;
+            float t = 0.0f;
+            float xend = pos.y + variable;
+            while (pos.y != xend)
+            {
+                pos = transform.rotation;
+                pos.y = Mathf.Lerp(pos.y, xend, t);
+                t += 0.07f;
+                transform.rotation = pos;
+                yield return null;
+
+            }*/
             var pos = transform.rotation;
             pos.y += variable;
             transform.rotation = pos;
-            return null;
+            return null;  
         }
 
         private void FixedUpdate()
@@ -251,8 +282,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                m_CharacterController.height/2f);
             desiredMove = Vector3.ProjectOnPlane(desiredMove, hitInfo.normal).normalized;
 
-            //m_MoveDir.x = 2*desiredMove.x*speed;
-            m_MoveDir.z = 2*desiredMove.z*speed;  //-- kroki w bok
+            m_MoveDir.x = 2*desiredMove.x*speed;
+            m_MoveDir.z = 2*desiredMove.z*speed;  //bieg do przodi
 
             if (m_CharacterController.isGrounded)
             {
@@ -296,7 +327,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
-            ProgressStepCycle(speed);
+            //ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
         }
 
@@ -347,7 +378,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         //Movement
 
-        private void ProgressStepCycle(float speed)
+        /*private void ProgressStepCycle(float speed)
         {
             if (m_CharacterController.velocity.sqrMagnitude > 0 && (m_Input.x != 0 || m_Input.y != 0))
             {
@@ -363,13 +394,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_NextStep = m_StepCycle + m_StepInterval;
 
             PlayFootStepAudio();
-        }
+        }*/
 
         private void GetInput(out float speed)
         {
-            // Read input
-            float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-            float vertical = 1;// CrossPlatformInputManager.GetAxis("Vertical"); //1;
 
             bool waswalking = m_IsWalking;
 
