@@ -153,21 +153,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         void OnTriggerEnter(Collider col)
         {
-            if (col.tag == "Destr")
-            {
-<<<<<<< HEAD
-=======
-                triggercollision = true;
-                if (isCharging == true)
-                {
-                    Destroy(col.gameObject);
-                }
-                //StartCoroutine(TurnSmooth(90));
-            }
             if (col.tag == "TurnTriggerLeft")
-            {
->>>>>>> origin/master
-                
+            {                
                 
                 //StartCoroutine(TurnSmooth(-90));
             }
