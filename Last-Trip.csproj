@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts(mine)\Destrictible.cs" />
     <Compile Include="Assets\Scripts(mine)\Flick.cs" />
     <Compile Include="Assets\Scripts(mine)\GameManager.cs" />
+    <Compile Include="Assets\Scripts(mine)\GameOverManager.cs" />
     <Compile Include="Assets\Scripts(mine)\GraviFlip.cs" />
     <Compile Include="Assets\Scripts(mine)\Slide.cs" />
     <Compile Include="Assets\Thief\Script\characterRotate.cs" />

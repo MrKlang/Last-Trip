@@ -7,6 +7,7 @@ TagManager:
   - TurnTriggerRight
   - TurnTriggerLeft
   - Destr
+  - Killer
   layers:
   - Default
   - TransparentFX
