@@ -76,6 +76,10 @@
     <Compile Include="Assets\Scripts(mine)\GameManager.cs" />
     <Compile Include="Assets\Scripts(mine)\GameOverManager.cs" />
     <Compile Include="Assets\Scripts(mine)\GraviFlip.cs" />
+    <Compile Include="Assets\Scripts(mine)\LoadOnEnter.cs" />
+    <Compile Include="Assets\Scripts(mine)\QuitOnEnter.cs" />
+    <Compile Include="Assets\Scripts(mine)\SelectOnInput.cs" />
+    <Compile Include="Assets\Scripts(mine)\SetAudioLevels.cs" />
     <Compile Include="Assets\Scripts(mine)\Slide.cs" />
     <Compile Include="Assets\Thief\Script\characterRotate.cs" />
   </ItemGroup>
