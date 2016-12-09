@@ -29,8 +29,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
-        public bool isDead = false;
         public int lane = 0;
+        public bool isDead = false;
         public float grav;
         private Camera m_Camera;
         private bool m_Jump;
@@ -53,12 +53,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
         float horizontal = 0; //CrossPlatformInputManager.GetAxis("Horizontal");
         float vertical = 0;
         bool isRotttated = false;
-
+        public int score;
+        InputManager inputManager;
         bool isCharging = false;
 
         // Use this for initialization
         private void Start()
         {
+            inputManager = FindObjectOfType<InputManager>();
             m_CharacterController = GetComponent<CharacterController>();
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
@@ -86,7 +88,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
             {
-                m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+                m_Jump = inputManager.GetButtonDown("Jump");
             }
             if (isRotttated)
             {
@@ -98,7 +100,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 vertical = 1;
             }
 
-            if (Input.GetKeyDown(KeyCode.A) && (lane != -1) && (!m_Jumping))
+            if (inputManager.GetButtonDown("Left") && (lane != -1) && (!m_Jumping))
             {
                 if (isRotttated)
                 {
@@ -109,7 +111,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     StartCoroutine(SmoothH(-3f));
                     lane--; }
             }
-            if (Input.GetKeyDown(KeyCode.D) && (lane != 1) && (!m_Jumping))
+            if (inputManager.GetButtonDown("Right") && (lane != 1) && (!m_Jumping))
             {
                 if (isRotttated)
                 {
@@ -120,11 +122,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 StartCoroutine(SmoothH(3f));
                 lane++; }
             }
-            if (Input.GetKeyDown(KeyCode.S) && (!isSliding) && (!m_Jumping))
+            if (inputManager.GetButtonDown("Slide") && (!isSliding) && (!m_Jumping))
             {
                 StartCoroutine(Slide());
             }
-            if (Input.GetKeyDown(KeyCode.LeftShift) && isCharging == false)
+            if (inputManager.GetButtonDown("Charge") && isCharging == false)
             {
                 isCharging = true;
                 StartCoroutine(Charge());
@@ -151,11 +153,30 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             
         }
+        void OnCollisionEnter(Collider col)
+        {
+            if (col.tag == "Pkt")
+            {
+                score = score + (100);
+                Debug.Log(score);
+            }
+        }
 
         void OnTriggerEnter(Collider col)
         {
+            
+            if (col.tag == "Destr")
+            {
+                
+                if (isCharging == true)
+                {
+                    Destroy(col.gameObject);
+                }
+                //StartCoroutine(TurnSmooth(90));
+            }
             if (col.tag == "TurnTriggerLeft")
-            {                
+            {
+                
                 
                 //StartCoroutine(TurnSmooth(-90));
             }
@@ -286,6 +307,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
             return null;  
         }
 
+        IEnumerator FlipGrav(float variable)
+        {
+            return null;
+        }
+
         private void FixedUpdate()
         {
             var h = height;
@@ -315,8 +341,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     m_Jumping = true;
                 }
             }
-
-            if (Input.GetButtonDown("Invert Gravity"))  //<< -----Odwracanie gravitacji
+            /*
+            if (inputManager.GetButtonDown("Invert Gravity"))  //<< -----Odwracanie gravitacji
             {
                 if (inverted == false)
                 {
@@ -337,7 +363,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_MoveDir -= Physics.gravity * m_GravityMultiplier * Time.deltaTime;
             }
-
+            */
             else
             {
                 m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.deltaTime;
@@ -422,7 +448,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 #if !MOBILE_INPUT
             // On standalone builds, walk/run speed is modified by a key press.
             // keep track of whether or not the character is walking or running
-            // m_IsWalking = !Input.GetKey(KeyCode.LeftShift);  -- blokada shifta
+            // m_IsWalking = !inputManager.GetKey(KeyCode.LeftShift);  -- blokada shifta
 #endif
             // set the desired speed to be walking or running
             speed = /*m_IsWalking ? m_WalkSpeed :*/ m_RunSpeed; //-- ustawienie szybkoœci chodu
@@ -518,13 +544,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         Destroy(hit.gameObject);
                     }
                 }
-                if(hit.gameObject.tag == "Killer")
+                if (hit.gameObject.tag == "Killer")
                 {
                     isDead = true;
                 }
             }
 
-            body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
+            body.AddForceAtPosition(m_CharacterController.velocity * 0.1f, hit.point, ForceMode.Impulse);
         }
     }
 }

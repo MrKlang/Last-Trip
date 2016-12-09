@@ -7,8 +7,8 @@ public class Collectible : MonoBehaviour {
     public float rotateSpeed;
 	// Update is called once per frame
 	void Update () {
-        gameObject.transform.Rotate(Vector3.up * Time.deltaTime * rotateSpeed);
-	}
+        gameObject.transform.Rotate(Vector3.forward * Time.deltaTime * rotateSpeed);
+    }
 
     void OnTriggerEnter(){
         GameManager.instance.Collect(value, gameObject);
